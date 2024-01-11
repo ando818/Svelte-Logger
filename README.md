@@ -17,19 +17,15 @@ npm i svelte-logger
 In any file you want to log
 ```
 <script>
-    import { onMount } from 'svelte';
+import { onMount } from 'svelte';
+import { log } from 'svelte-logger';
 
-https://github.com/ando818/Svelte-Logger/assets/67844237/dc66182a-ad9f-439f-a2f3-c9ea9be8d3b5
-
-
-  	import { log } from 'svelte-logger';
-
-    onMount(() => {
-      log("hello");
-      log({
-            message: "Hello",
-            item: {
-                  name: "Potatoes"
+onMount(() => {
+   log("Hello");
+   log({
+   	message: "Hello",
+	item: {
+		name: "Potatoes"
             }
         )
     }
@@ -45,7 +41,7 @@ To disable the logs going to console. From any file
 Rendering the logs. In any component where you want the logs to render.
 ```
 <script>
-	import LogView from 'svelte-logger/LogView.svelte';	
+import LogView from 'svelte-logger/LogView.svelte';	
 </script>
 
 <LogView/>
