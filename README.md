@@ -6,10 +6,10 @@ Renders a dendogram of logs from the function call stack.
   <img src="https://i.imgur.com/jutkVST.jpg" alt="Merge sort">
 </p>
 
-##Install
+## Install
 npm i svelte-logger
 
-##Usage
+## Usage
 
 In any file you want to log
 <script>
