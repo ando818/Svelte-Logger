@@ -3,7 +3,7 @@
 Renders a dendogram of logs from the function call stack. Clicking on any logs will scroll to it and clicking on any other node will expand/collapse it.
 Logs within any particular file will be rendered from top to bottom.
 
-https://github.com/ando818/Svelte-Logger/assets/67844237/b59366cd-2b48-44f8-b9c6-be649a2cb74e
+https://github.com/ando818/Svelte-Logger/assets/67844237/bbfba464-3406-44fd-b0fd-70efd9246b6e
 
 <p align="center">
   <img src="https://i.imgur.com/YM5iCHc.png" alt="Logs from different components in different places">
