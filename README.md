@@ -3,14 +3,11 @@
 Renders a dendogram of logs from the function call stack. Clicking on any logs will scroll to it and clicking on any other node will expand/collapse it.
 Logs within any particular file will be rendered from top to bottom.
 
-<p align="center">
-  <img src="https://i.imgur.com/jutkVST.jpg" alt="Merge sort">
-</p>
+https://github.com/ando818/Svelte-Logger/assets/67844237/b59366cd-2b48-44f8-b9c6-be649a2cb74e
 
 <p align="center">
   <img src="https://i.imgur.com/YM5iCHc.png" alt="Logs from different components in different places">
 </p>
-
 
 ## Install
 npm i svelte-logger
@@ -21,6 +18,10 @@ In any file you want to log
 ```
 <script>
     import { onMount } from 'svelte';
+
+https://github.com/ando818/Svelte-Logger/assets/67844237/dc66182a-ad9f-439f-a2f3-c9ea9be8d3b5
+
+
   	import { log } from 'svelte-logger';
 
     onMount(() => {
