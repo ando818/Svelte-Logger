@@ -12,6 +12,7 @@ npm i svelte-logger
 ## Usage
 
 In any file you want to log
+```
 <script>
     import { onMount } from 'svelte';
   	import { log } from 'svelte-logger';
@@ -26,12 +27,14 @@ In any file you want to log
         )
     }
 </script>
-
+```
 Rendering the logs. In any component where you want the logs to render.
+```
 <script>
 	import LogView from 'svelte-logger/LogView.svelte';	
 </script>
 
 <LogView/>
+```
 
 
