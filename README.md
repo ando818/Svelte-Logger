@@ -7,6 +7,11 @@ Generally logs will be rendered from top to bottom.
   <img src="https://i.imgur.com/jutkVST.jpg" alt="Merge sort">
 </p>
 
+<p align="center">
+  <img src="https://i.imgur.com/YM5iCHc.png" alt="Logs from different components in different places">
+</p>
+
+
 ## Install
 npm i svelte-logger
 
