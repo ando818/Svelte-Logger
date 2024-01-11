@@ -14,6 +14,7 @@ npm i svelte-logger
 
 ## Usage
 
+### Logging 
 In any file you want to log
 ```
 <script>
@@ -31,20 +32,21 @@ onMount(() => {
     }
 </script>
 ```
-
-To disable the logs going to console. From any file
-```
- import { logToConsole } from 'svelte-logger';
- logToConsole(false);
-```
-
-Rendering the logs. In any component where you want the logs to render.
+### Rendering 
+In any component where you want the logs to render (preferably an empty page)
 ```
 <script>
 import LogView from 'svelte-logger/LogView.svelte';	
 </script>
 
 <LogView/>
+```
+
+### Disable console logs 
+From any file
+```
+ import { logToConsole } from 'svelte-logger';
+ logToConsole(false);
 ```
 
 ## Limitations
