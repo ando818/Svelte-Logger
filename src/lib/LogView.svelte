@@ -12,6 +12,7 @@
 	let selected = null;
 	let svg;
 
+
 	onMount(() => {
 		renderLogs3();
 	});
@@ -392,7 +393,6 @@
 	}
 </script>
 
-<button on:click={() => log("hello")} />
 <svelte:head>
 	<style>
 		body {
