@@ -54,5 +54,5 @@ Rendering the logs. In any component where you want the logs to render.
 1. Logs on initial server start can't be rendered in the graph.
 2. Logs on initial server load will be ignored.
 3. Logs from different components will not necessarily show in top to bottom order.
-4. Paths from imports aren't followed.
+4. Paths from imports aren't followed, and will show logs in the imported module at the root of the graph.
 5. Some others I haven't discovered yet. 
