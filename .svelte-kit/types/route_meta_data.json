@@ -1,0 +1,7 @@
+{
+	"/": [],
+	"/create/[id]": [
+		"src/routes/create/[id]/+layout.server.js",
+		"src/routes/create/[id]/+layout.server.js"
+	]
+}
