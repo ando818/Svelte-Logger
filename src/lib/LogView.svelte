@@ -2,7 +2,8 @@
 	import { onMount } from "svelte";
 	import * as d3 from "d3";
 	import { get } from "svelte/store";
-	import { log, logs } from "./index.js";
+	import { log} from "./index.js";
+	import { logs } from "./logstore.js";
 	import { JsonView } from "@zerodevx/svelte-json-view";
 	import AiOutlineClear from "svelte-icons-pack/ai/AiOutlineClear";
 	import Icon from "svelte-icons-pack/Icon.svelte";
@@ -22,9 +23,12 @@
 		});
 
 		if (arr.length <= 1) {
-			log({
-				message: "Returning single value",
-			}, arr);
+			log(
+				{
+					message: "Returning single value",
+				},
+				arr
+			);
 			return arr;
 		}
 
@@ -71,12 +75,10 @@
 			.concat(left.slice(leftIndex))
 			.concat(right.slice(rightIndex));
 
-		log(
-			{
-				message: "Returning from merge",
-				result
-			}
-		);
+		log({
+			message: "Returning from merge",
+			result,
+		});
 
 		return result;
 	}
@@ -94,19 +96,26 @@
 			for (let j = log.stacks.length - 1; j >= 0; j--) {
 				let stack = log.stacks[j];
 
-				let found = c.children.find((childStack) => {
-					return (
-						childStack.stack.calledFrom.col ==
-							stack.calledFrom.col &&
-						childStack.stack.calledFrom.function ==
-							stack.calledFrom.function &&
-						childStack.stack.calledFrom.line ==
-							stack.calledFrom.line &&
-							childStack.stack.fileName === stack.fileName
-					);
-				});
+				let found;
 
-				if (found && j>0) {
+					found = c.children.find((childStack) => {
+						if (j == log.stacks.length-1) {
+							return 	childStack.stack.fileName === stack.fileName;
+
+						}
+						return (
+							childStack.stack.calledFrom.col ==
+								stack.calledFrom.col &&
+							childStack.stack.calledFrom.function ==
+								stack.calledFrom.function &&
+							childStack.stack.calledFrom.line ==
+								stack.calledFrom.line &&
+							childStack.stack.fileName === stack.fileName
+						);
+					});
+				
+
+				if (found && j > 0) {
 					c = found;
 				} else {
 					let newChild = {
@@ -128,8 +137,8 @@
 	function renderLogs3() {
 		const data = buildPos4();
 		// Specify the charts’ dimensions. The height is variable, depending on the layout.
-		const width = 928;
-		const marginTop = 20;
+		const width = Math.floor(document.body.scrollWidth*0.6);
+		const marginTop = 40;
 		const marginRight = 10;
 		const marginBottom = 10;
 		const marginLeft = 40;
@@ -357,21 +366,22 @@
 			inline: "start",
 		});
 		uls[i].style.setProperty("--jsonKeyColor", "red", "");
+		uls[i].style.setProperty("--jsonValStringColor", "red", "");
 
 		if (selected != null) {
 			uls[selected].style.setProperty("--jsonKeyColor", "", "");
+			uls[selected].style.setProperty("--jsonValStringColor", "", "");
 		}
 		selected = i;
 	}
 
 	function clearLogs() {
-		logs.set([])
+		logs.set([]);
 
 		if (elem) {
 			elem.innerHTML = null;
 		}
 		renderLogs3();
-				
 	}
 	function getLogs(logs) {
 		let l = [];
@@ -382,6 +392,7 @@
 	}
 </script>
 
+<button on:click={() => log("hello")} />
 <svelte:head>
 	<style>
 		body {
@@ -391,17 +402,15 @@
 </svelte:head>
 <div class="page">
 	<div class="container">
-
 		<div class="clear" on:click={clearLogs}>
-			<Icon src={AiOutlineClear} color="white" size={24}/>
+			<Icon src={AiOutlineClear} color="white" size={24} />
 		</div>
-				<div bind:this={elem} class="canvas" />
-
+		<div bind:this={elem} class="canvas" />
 	</div>
 	{#key logs}
-	<div class="logcontainer wrap">
-		<JsonView json={getLogs($logs)} />
-	</div>
+		<div class="logcontainer wrap">
+			<JsonView json={getLogs($logs)} />
+		</div>
 	{/key}
 </div>
 
@@ -431,8 +440,6 @@
 		margin-top: 5px;
 	}
 	.container {
-		margin-left: 100px;
-		height: 30%;
 		width: 70%;
 	}
 	.grid {
