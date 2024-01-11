@@ -1,6 +1,7 @@
 # Svelte (Visual) Logger
 
-Renders a dendogram of logs from the function call stack.
+Renders a dendogram of logs from the function call stack. Clicking on any logs will scroll to it and clicking on any other node will expand/collapse it.
+Generally logs will be rendered from top to bottom.
 
 <p align="center">
   <img src="https://i.imgur.com/jutkVST.jpg" alt="Merge sort">
@@ -28,6 +29,13 @@ In any file you want to log
     }
 </script>
 ```
+
+To disable the logs going to console. From any file
+```
+ import { logToConsole } from 'svelte-logger';
+ logToConsole(false);
+```
+
 Rendering the logs. In any component where you want the logs to render.
 ```
 <script>
@@ -37,4 +45,8 @@ Rendering the logs. In any component where you want the logs to render.
 <LogView/>
 ```
 
-
+## Limitations
+1. Logs on initial server start can't be rendered in the graph.
+2. Logs on initial server load will be ignored.
+3. Logs from different components will not necessarily show in top to bottom order.
+4. Some others I haven't discovered yet. 
