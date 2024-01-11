@@ -2,4 +2,5 @@
 
 Renders a dendogram of logs from the function call stack.
 
-https://i.imgur.com/jutkVST.jpg
+
+![alt text]([http://url/to/img.png](https://i.imgur.com/jutkVST.jpg)https://i.imgur.com/jutkVST.jpg)
