@@ -1,7 +1,7 @@
 # Svelte (Visual) Logger
 
 Renders a dendogram of logs from the function call stack. Clicking on any logs will scroll to it and clicking on any other node will expand/collapse it.
-Generally logs will be rendered from top to bottom.
+Logs within any particular file will be rendered from top to bottom.
 
 <p align="center">
   <img src="https://i.imgur.com/jutkVST.jpg" alt="Merge sort">
