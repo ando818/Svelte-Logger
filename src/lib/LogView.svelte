@@ -402,7 +402,7 @@
 </svelte:head>
 <div class="page">
 	<div class="container">
-		<div class="clear" on:click={clearLogs}>
+		<button class="clear-button" on:click={clearLogs}>Clear Logs</button>
 			<Icon src={AiOutlineClear} color="white" size={24} />
 		</div>
 		<div bind:this={elem} class="canvas" />
@@ -458,5 +458,10 @@
 		overflow: scroll;
 		margin-left: 100px;
 		width: 30%;
+	}
+	.clear-button {
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
 </style>
