@@ -42,6 +42,9 @@ import LogView from 'svelte-logger/LogView.svelte';
 <LogView/>
 ```
 
+### Changing the Orientation
+To switch the orientation of the dendogram, you can use the 'Toggle Orientation' button that has been added to the LogView interface. Clicking this button toggles the dendogram's orientation between a left-to-right and a top-down view, offering an alternate visualization of the tree structure.
+
 ### Disable console logs 
 From any file
 ```

@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from "svelte";
+
+	let orientation = 'LR';
 	import * as d3 from "d3";
 	import { get } from "svelte/store";
 	import { log} from "./index.js";
@@ -148,7 +150,17 @@
 		// “bottom”, in the data domain. The width of a column is based on the tree’s height.
 		const root = d3.hierarchy(data);
 		const dx = 20;
-		const dy = (width - marginRight - marginLeft) / (1 + root.height);
+		const dy = orientation === 'LR' ? (width - marginRight - marginLeft) / (1 + root.height) : dx;
+
+		// Define the tree layout and the shape for links.
+		const tree = orientation === 'LR' ? d3.tree().nodeSize([dx, dy]) : d3.tree().nodeSize([dy, dx]);
+		const diagonal = orientation === 'LR' ? d3
+			.linkHorizontal()
+			.x((d) => d.y)
+			.y((d) => d.x) : d3
+			.linkVertical()
+			.x((d) => d.x)
+			.y((d) => d.y);
 
 		// Define the tree layout and the shape for links.
 		const tree = d3.tree().nodeSize([dx, dy]);
@@ -392,6 +404,7 @@
 	}
 </script>
 
+<button on:click={toggleOrientation}>Toggle Orientation</button>
 <button on:click={() => log("hello")} />
 <svelte:head>
 	<style>
@@ -405,6 +418,11 @@
 		<div class="clear" on:click={clearLogs}>
 			<Icon src={AiOutlineClear} color="white" size={24} />
 		</div>
+
+	function toggleOrientation() {
+		orientation = orientation === 'LR' ? 'TD' : 'LR';
+		renderLogs3();
+	}
 		<div bind:this={elem} class="canvas" />
 	</div>
 	{#key logs}
