@@ -12,8 +12,9 @@
 	let selected = null;
 	let svg;
 
+
 	onMount(() => {
-		renderLogs3();
+		renderLogs();
 	});
 
 	function mergeSort(arr) {
@@ -83,7 +84,7 @@
 		return result;
 	}
 
-	function buildPos4() {
+	function buildGraph() {
 		let logz = get(logs);
 		const pos = {
 			children: [],
@@ -134,8 +135,8 @@
 		return pos;
 	}
 
-	function renderLogs3() {
-		const data = buildPos4();
+	function renderLogs() {
+		const data = buildGraph();
 		// Specify the charts’ dimensions. The height is variable, depending on the layout.
 		const width = Math.floor(document.body.scrollWidth*0.6);
 		const marginTop = 40;
@@ -381,7 +382,7 @@
 		if (elem) {
 			elem.innerHTML = null;
 		}
-		renderLogs3();
+		renderLogs();
 	}
 	function getLogs(logs) {
 		let l = [];
@@ -392,7 +393,6 @@
 	}
 </script>
 
-<button on:click={() => log("hello")} />
 <svelte:head>
 	<style>
 		body {
