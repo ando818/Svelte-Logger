@@ -12,17 +12,21 @@ class Err extends Error {
         Error.prepareStackTrace = (_, callsites) => {
             for (let i = 0; i < callsites.length; i++) {
                 let callsite = callsites[i]
+                console.log(callsite.getFileName())
                 let stack = {
                     col: callsite.getColumnNumber(),
                     line: callsite.getLineNumber(),
                     name: callsite.getFunctionName(),
                     fileName: callsite.getFileName(),
                 }
+
                 let k = stack.fileName?.indexOf('/src')
                 if (k > 0) {
                     stack.fileName = stack.fileName.substring(k, stack.fileName.length)
                     let p = stack.fileName.indexOf('?t=')
+                    if (p >0) {
                     stack.fileName = stack.fileName.substring(0, p)
+                    }
                 }
                 if (i < callsites.length - 1) {
                     stack.calledFrom = {
@@ -53,16 +57,39 @@ export const log = function log(event, nonce) {
     const err = new Err();
     let stacks = err.stacks;
 
-    const index = err.stacks.findLastIndex((s) => s.fileName?.startsWith('/src'))
+    const index = err.stacks.find((s) => s.fileName != null);
+    console.log(index, stacks)
+    if (!index) {
+        console.log("returning")
+        return;
+    }
 
-    stacks = stacks.slice(0, index + 1)
-    if (stacks[stacks.length - 1].fileName && stacks[stacks.length - 1].name) {
+    let instanceIndex = err.stacks.findIndex((s) => s.name === 'instance')
+
+    if (instanceIndex > 0) {
+        let lastStack = stacks[instanceIndex];
+        stacks = stacks.slice(0, instanceIndex)
         stacks.push({
-            fileName: stacks[stacks.length - 1].fileName,
+            fileName: lastStack.fileName,
             col: 0,
             row: 0
         })
+    } else {
+        const index2 = err.stacks.findLastIndex((s) => s.fileName?.startsWith('/src'))
+        stacks = stacks.slice(0, index2 + 1)
+        let lastStack = stacks[stacks.length - 1];
+
+        if (lastStack.fileName && lastStack.name) {
+            stacks.push({
+                fileName: lastStack.fileName,
+                col: 0,
+                row: 0
+            })
+
+        }
+
     }
+    console.log(stacks)
     logs.update((logs) => logs.concat({
         stacks: stacks,
         event: event,
