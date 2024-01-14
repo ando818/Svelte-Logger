@@ -1,7 +1,9 @@
 # Svelte (Visual) Logger
 
-Renders a dendogram of logs from the function call stack. Clicking on any logs will scroll to it and clicking on any other node will expand/collapse it.
-Logs within any particular file will be rendered from top to bottom.
+Renders a graph of the logs built from the function call stack. Supports both serverside and client side logs.
+
+Clicking on any logs will scroll to it and clicking on any other node will expand/collapse it.
+Logs within any particular file will be rendered from top to bottom. 
 
 https://github.com/ando818/Svelte-Logger/assets/67844237/72f02b68-7e33-4995-a871-3d096ca5401e
 
@@ -15,6 +17,32 @@ https://github.com/ando818/Svelte-Logger/assets/67844237/72f02b68-7e33-4995-a871
 ## Install
 npm i svelte-logger
 
+In src/hooks.server.js add
+```
+import { logs } from 'svelte-logger/logstore.js';
+
+import { get, writable } from 'svelte/store';
+
+export async function handle({ event, resolve }) {
+	if (event.url.pathname.startsWith('/postLog')) {
+		let text = await event.request.text();
+		let newLog = JSON.parse(text);
+		logs.update((logs) => logs.concat(newLog));
+		return new Response(JSON.stringify(get(logs)));
+	}
+
+	else if (event.url.pathname.startsWith('/getLogs')) {
+		return new Response(JSON.stringify(get(logs)));
+	}
+
+	else if (event.url.pathname.startsWith('/clearLogs')) {
+		logs.update((logs) => []);
+		return new Response(JSON.stringify(get(logs)));
+	}
+	const response = await resolve(event);
+	return response;
+}
+```
 ## Usage
 
 ### Logging 
