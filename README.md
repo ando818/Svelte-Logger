@@ -82,5 +82,5 @@ From any file
 
 ## Limitations
 1. Logs from different components will not necessarily show in top to bottom order.
-2. Paths from rendering components followed, and will show logs in the rendered component at the root of the graph.
+2. Paths from rendering components are not followed, and will show the rendered component at the root of the graph. 
 3. Some others I haven't discovered yet.
