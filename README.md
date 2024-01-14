@@ -9,6 +9,9 @@ https://github.com/ando818/Svelte-Logger/assets/67844237/72f02b68-7e33-4995-a871
   <img src="https://i.imgur.com/YM5iCHc.png" alt="Logs from different components in different places">
 </p>
 
+<img width="1347" alt="Screenshot 2024-01-14 at 12 48 13 PM" src="https://github.com/ando818/Svelte-Logger/assets/67844237/f4ff0bf3-dae6-4900-9502-111675ebcd49">
+
+
 ## Install
 npm i svelte-logger
 
