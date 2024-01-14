@@ -1,7 +1,13 @@
 {
-	"/": [],
+	"/": [
+		"src/routes/+page.server.js",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.ts"
+	],
 	"/create/[id]": [
 		"src/routes/create/[id]/+layout.server.js",
-		"src/routes/create/[id]/+layout.server.js"
+		"src/routes/+layout.ts",
+		"src/routes/create/[id]/+layout.server.js",
+		"src/routes/+layout.ts"
 	]
 }

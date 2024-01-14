@@ -18,9 +18,7 @@ function getFromStorage(key) {
     }
 }
 
-export const logs = writable(
-    getFromStorage('logs')
-);
+export const logs = writable([]);
 
 logs.subscribe((u) => {
     if (browser) {

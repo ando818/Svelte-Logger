@@ -2,7 +2,7 @@
 import { enableConsole, logs } from './logstore'
 let id = 0;
 import { get } from "svelte/store";
-
+import { browser } from '$app/environment';
 class Err extends Error {
     constructor(message) {
         super(message);
@@ -12,20 +12,23 @@ class Err extends Error {
         Error.prepareStackTrace = (_, callsites) => {
             for (let i = 0; i < callsites.length; i++) {
                 let callsite = callsites[i]
-                console.log(callsite.getFileName())
+                //console.log(callsite.getFileName())
                 let stack = {
                     col: callsite.getColumnNumber(),
                     line: callsite.getLineNumber(),
                     name: callsite.getFunctionName(),
                     fileName: callsite.getFileName(),
+                    methodName: callsite.getMethodName(),
+                    this: callsite.getThis(),
+                    type: callsite.getTypeName()
                 }
 
                 let k = stack.fileName?.indexOf('/src')
                 if (k > 0) {
                     stack.fileName = stack.fileName.substring(k, stack.fileName.length)
                     let p = stack.fileName.indexOf('?t=')
-                    if (p >0) {
-                    stack.fileName = stack.fileName.substring(0, p)
+                    if (p > 0) {
+                        stack.fileName = stack.fileName.substring(0, p)
                     }
                 }
                 if (i < callsites.length - 1) {
@@ -44,6 +47,7 @@ class Err extends Error {
                 this.stacks.push(stack)
 
             }
+            return this.stacks;
         };
 
         this._stack = this.stack
@@ -52,21 +56,89 @@ class Err extends Error {
     }
 }
 
+const parseStackTrace = (stackTrace) => {
+    const lines = stackTrace.split('\n').map(line => line.trim()).filter(Boolean);
+
+    const parsedStack = lines.map(line => {
+        const match = line.match(/^\s*at (\S+) \(([^:]+):(\d+):(\d+)\)$/);
+
+
+        if (match) {
+            const [, functionName, fileName, lineNumber, columnNumber] = match;
+            const index = fileName.indexOf("/src");
+            return {
+                function: functionName,
+                fileName: fileName.substring(index),
+                line: lineNumber,
+                col: columnNumber
+            };
+        } else {
+            // Handle other formats if needed
+            return null;
+        }
+    }).filter(Boolean);
+
+    return parsedStack;
+};
+
+function addCalledFrom(stacks) {
+    for (let i =0; i< stacks.length-1; i++) {
+        stacks[i].calledFrom = {
+            fileName: stacks[i+1].fileName
+        }
+    }
+}
 
 export const log = function log(event, nonce) {
+
+    const e = new Error();
+
+    //Server side functions don't have a filename for some reason using our custom Error
+    let serverStacks = parseStackTrace(e.stack);
     const err = new Err();
     let stacks = err.stacks;
 
+    if (!browser) {
+        for (let i = 0; i < serverStacks.length; i++) {
+            let serverStack = serverStacks[i];
+            stacks[i].fileName = serverStack.fileName;
+        }
+    }
+
+
+
     const index = err.stacks.find((s) => s.fileName != null);
-    console.log(index, stacks)
     if (!index) {
-        console.log("returning")
         return;
     }
 
-    let instanceIndex = err.stacks.findIndex((s) => s.name === 'instance')
+    let evalIndex = stacks.findIndex((s) => s.name === 'eval')
+    if (evalIndex > 0) {
+        let lastStack = stacks[evalIndex];
+        stacks = stacks.slice(0, evalIndex);
 
-    if (instanceIndex > 0) {
+        stacks.push({
+            fileName: lastStack.fileName,
+            col: 0,
+            row: 0
+        })
+       // addCalledFrom(err.stacks)
+    }
+
+    let loadIndex = stacks.findIndex((s) => s.name === 'load')
+
+    let instanceIndex = stacks.findIndex((s) => s.name === 'instance')
+
+    if (loadIndex > 0) {
+        let lastStack = stacks[loadIndex];
+        stacks = stacks.slice(0, loadIndex)
+        stacks.push({
+            fileName: lastStack.fileName,
+            col: 0,
+            row: 0
+        })
+    }
+    else if (instanceIndex > 0) {
         let lastStack = stacks[instanceIndex];
         stacks = stacks.slice(0, instanceIndex)
         stacks.push({
@@ -87,15 +159,45 @@ export const log = function log(event, nonce) {
             })
 
         }
-
     }
-    console.log(stacks)
-    logs.update((logs) => logs.concat({
+
+    let lastStack = stacks[stacks.length-1];
+    let fileDirs = lastStack.fileName.split('/');
+    stacks.splice(stacks.length-1)
+    for (let i=fileDirs.length-1;i>0;i--) {
+        stacks.push(
+            {
+                fileName: fileDirs[i],
+                col: 0,
+                row: 0,
+                calledFrom: {
+                    col: 0,
+                    row: 0,
+                    fileName: ""
+                }
+            }
+        )
+    }
+
+    let newLog = {
         stacks: stacks,
         event: event,
         ts: Date.now(),
         id: (id += 1),
-    }));
+    };
+
+    if (browser) {
+        fetch("/postLogs", {
+            body: JSON.stringify(newLog),
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"
+            }
+
+        })
+    } else {
+        logs.update((logs) => logs.concat(newLog));
+    }
     if (get(enableConsole)) {
         console.log(event)
     }

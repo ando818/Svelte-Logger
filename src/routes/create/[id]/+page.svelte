@@ -2,7 +2,6 @@
     import { onMount } from "svelte";
 	import { log } from "$lib/index.js";
 
-    log('koko')
     onMount(() => {
     
         log({

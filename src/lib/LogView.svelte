@@ -3,7 +3,6 @@
 	import * as d3 from "d3";
 	import { get } from "svelte/store";
 	import { log} from "./index.js";
-	import { logs } from "./logstore.js";
 	import { JsonView } from "@zerodevx/svelte-json-view";
 	import AiOutlineClear from "svelte-icons-pack/ai/AiOutlineClear";
 	import Icon from "svelte-icons-pack/Icon.svelte";
@@ -12,10 +11,22 @@
 	let selected = null;
 	let svg;
 
-
-	onMount(() => {
+	let logs = [];
+	onMount(async () => {
+		//mergeSort([1,2])
+		await fetchLogs();
 		renderLogs();
 	});
+
+	async function fetchLogs() {
+		const resp = await fetch("/getLogs", {
+			method: "GET",
+			headers: {
+				"content-type": "application/json"
+			}
+		})
+		logs = await resp.json();
+	}
 
 	function mergeSort(arr) {
 		log({
@@ -85,14 +96,13 @@
 	}
 
 	function buildGraph() {
-		let logz = get(logs);
 		const pos = {
 			children: [],
 		};
 		let c = pos;
 
-		for (let i = 0; i < logz.length; i++) {
-			let log = logz[i];
+		for (let i = 0; i < logs.length; i++) {
+			let log = logs[i];
 
 			for (let j = log.stacks.length - 1; j >= 0; j--) {
 				let stack = log.stacks[j];
@@ -376,13 +386,26 @@
 		selected = i;
 	}
 
-	function clearLogs() {
-		logs.set([]);
+	async function clearLogs() {
+		const resp = await fetch("/clearLogs", {
+			method: "GET",
+			headers: {
+				"content-type": "application/json"
+			}
+		})
+		logs = await resp.json();
+		if (elem) {
+			elem.innerHTML = null;
+		}
+		renderLogs();
+	}
+	function refresh() {
 
 		if (elem) {
 			elem.innerHTML = null;
 		}
 		renderLogs();
+	
 	}
 	function getLogs(logs) {
 		let l = [];
@@ -402,14 +425,20 @@
 </svelte:head>
 <div class="page">
 	<div class="container">
+		<div class='refresh' on:click={refresh}>
+			<Icon src={AiOutlineClear} color="white" size={24} />
+
+		</div>
+
 		<div class="clear" on:click={clearLogs}>
+			
 			<Icon src={AiOutlineClear} color="white" size={24} />
 		</div>
 		<div bind:this={elem} class="canvas" />
 	</div>
 	{#key logs}
 		<div class="logcontainer wrap">
-			<JsonView json={getLogs($logs)} />
+			<JsonView json={getLogs(logs)} />
 		</div>
 	{/key}
 </div>
