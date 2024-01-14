@@ -81,9 +81,6 @@ From any file
 ```
 
 ## Limitations
-1. Logs on initial server start can't be rendered in the graph.
-2. Logs on initial server load will be ignored.
-3. Logs from different components will not necessarily show in top to bottom order.
-4. Paths from imports aren't followed, and will show logs in the imported module at the root of the graph.
-5. Some others I haven't discovered yet.
-6. Have not tried server side logs yet, so not sure what will happen in those cases
+1. Logs from different components will not necessarily show in top to bottom order.
+2. Paths from rendering components followed, and will show logs in the rendered component at the root of the graph.
+3. Some others I haven't discovered yet.
