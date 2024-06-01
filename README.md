@@ -15,6 +15,7 @@ https://github.com/ando818/Svelte-Logger/assets/67844237/72f02b68-7e33-4995-a871
 
 
 ## Install
+https://www.npmjs.com/package/svelte-logger
 npm i svelte-logger
 
 In src/hooks.server.js add
